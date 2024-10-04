@@ -1,0 +1,10 @@
+<div *ngIf="isOpen" class="popup-overlay">
+  <div
+    #popupContainer
+    class="popup-container"
+    *ngIf="isOpen"
+    (click)="onPopupClick($event)"
+  >
+    <ng-content></ng-content>
+  </div>
+</div>

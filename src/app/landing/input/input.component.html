@@ -1,0 +1,44 @@
+<input
+  type="text"
+  class="text-white bg-transparent border-b border-secondary outline-none placeholder:text-2xl"
+  placeholder="cli"
+/>
+<span (click)="popupForCli()" class="text-white cursor-pointer">?</span>
+
+<app-popup>
+  <div class="flex flex-col gap-y-3">
+    <h2 class="popup-head">How to use cli ?</h2>
+    <div class="pre-wrapper">
+      <pre class="pre-code">
+        <code>let x= navbar links <span class="text-red-600">*not plural*</span></code>
+      </pre>
+    </div>
+
+    <div class="pre-wrapper">
+      <h2 class="popup-head">GET</h2>
+      <pre class="pre-code">
+        <code>select all from x</code>
+      </pre>
+    </div>
+
+    <div class="pre-wrapper">
+      <h2 class="popup-head">PATCH</h2>
+      <p class="text-center">1</p>
+      <p class="text-center">2</p>
+      <p class="text-center">3</p>
+      <p>assume that the current data is displayed like that</p>
+      <pre class="pre-code">
+        <code>patch x->1 to done</code>
+      </pre>
+    </div>
+
+    <div class="pre-wrapper">
+      <h2 class="popup-head">Home page</h2>
+      <p>By default home page contains one record from each entity</p>
+      <pre class="pre-code">
+        <code>set home to x</code>
+      </pre>
+      <p>now home page contains only x contents</p>
+    </div>
+  </div>
+</app-popup>
