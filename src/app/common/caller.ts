@@ -2,9 +2,7 @@ import { fromFetch } from "rxjs/fetch";
 import { SERVER_URL } from "../app.component";
 import {
   BehaviorSubject,
-  catchError,
   Observable,
-  of,
   retry,
   switchMap,
   throwError,
@@ -21,7 +19,8 @@ import {
  *
  * */
 export class Caller {
-  call<T>(path: string, subj: BehaviorSubject<T[]>): Observable<T[]> {
+  readonly DELAY_TIME: number = 3000;
+  getDataFor<T>(path: string, subj: BehaviorSubject<T[]>): Observable<T[]> {
     return fromFetch(`${SERVER_URL}/${path}`).pipe(
       switchMap(async (response) => {
         if (response.ok) {
@@ -35,12 +34,24 @@ export class Caller {
       retry({
         delay: () => {
           console.error("Retry calling for", path);
-          return timer(3000); // Retry after 3 seconds
+          return timer(this.DELAY_TIME); // Retry after 3 seconds
         },
       }),
-      catchError(() => {
-        return of([]);
-      }),
     );
+  }
+
+  /*
+   * @Returns string 'up' if server respond otherwise,
+   * try to call server again @Returns nothing
+   */
+
+  async healthCheck(): Promise<string> {
+    try {
+      await fetch(SERVER_URL);
+      return "up";
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, this.DELAY_TIME));
+      return this.healthCheck();
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { Caller } from "../common/caller";
 
 @Component({
   selector: "app-navbar",
@@ -7,4 +8,15 @@ import { Component } from "@angular/core";
   templateUrl: "./navbar.component.html",
   styleUrl: "./navbar.component.scss",
 })
-export class NavbarComponent {}
+export class NavbarComponent {
+  state = "down";
+
+  constructor() {
+    this.isServerUp();
+  }
+
+  async isServerUp() {
+    const state = new Caller();
+    this.state = await state.healthCheck();
+  }
+}

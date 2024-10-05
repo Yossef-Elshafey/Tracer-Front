@@ -16,6 +16,6 @@ export class TaskService {
   fetchTasks(): Observable<Task[]> {
     const caller = new Caller();
 
-    return caller.call<Task>("task", this.taskSubject);
+    return caller.getDataFor<Task>("task", this.taskSubject);
   }
 }

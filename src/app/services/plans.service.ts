@@ -15,7 +15,6 @@ export class PlansService {
 
   fetchPlans(): Observable<Plan[]> {
     const caller = new Caller();
-
-    return caller.call<Plan>("plan", this.planSubject);
+    return caller.getDataFor<Plan>("plan", this.planSubject);
   }
 }
