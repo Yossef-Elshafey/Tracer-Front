@@ -5,7 +5,7 @@
 />
 <span (click)="popupForCli()" class="text-white cursor-pointer">?</span>
 
-<app-popup>
+<app-popup [popupID]="popupID">
   <div class="flex flex-col gap-y-3">
     <h2 class="popup-head">How to use cli ?</h2>
     <div class="pre-wrapper">

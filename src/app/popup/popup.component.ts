@@ -1,34 +1,45 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   HostListener,
+  Input,
+  OnInit,
   ViewChild,
-} from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { PopupStatusService } from "../services/popup-status.service";
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { PopupStatusService } from '../services/popup-status.service';
 
 @Component({
-  selector: "app-popup",
+  selector: 'app-popup',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: "./popup.component.html",
+  templateUrl: './popup.component.html',
 })
-export class PopupComponent implements AfterViewInit {
+export class PopupComponent implements OnInit {
   constructor(private popupStatus: PopupStatusService) {}
 
-  @ViewChild("popupContainer") popupContainer!: ElementRef;
+  @ViewChild('popupContainer') popupContainer!: ElementRef;
 
   isOpen: boolean = false;
+  @Input() popupID: number = -1;
 
-  ngAfterViewInit(): void {
-    this.popupStatus.$popupStatus.subscribe((status) => (this.isOpen = status));
+  ngOnInit(): void {
+    this.popupStatus
+      .getPopupStatus(this.popupID)
+      .subscribe((status) => (this.isOpen = status));
   }
 
-  @HostListener("document:click", ["$event"])
+  @HostListener('window:keydown', ['$event'])
+  closeESC(event: KeyboardEvent) {
+    if (event.key === 'Escape' && this.isOpen) {
+      this.popupStatus.hide(this.popupID);
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
   onDocClick(event: MouseEvent) {
     if (this.isOpen && !this.isInsidePopUp(event)) {
-      this.popupStatus.hide();
+      this.popupStatus.hide(this.popupID);
     }
   }
 

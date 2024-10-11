@@ -1,10 +1,10 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
-import { Plan } from "../interfaces/plan";
-import { Caller } from "../common/caller";
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Plan } from '../types/plan';
+import { Caller } from '../common/caller';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class PlansService {
   private planSubject: BehaviorSubject<Plan[]> = new BehaviorSubject(
@@ -15,6 +15,6 @@ export class PlansService {
 
   fetchPlans(): Observable<Plan[]> {
     const caller = new Caller();
-    return caller.getDataFor<Plan>("plan", this.planSubject);
+    return caller.getDataFor<Plan>('plan', this.planSubject);
   }
 }
