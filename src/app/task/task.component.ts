@@ -20,19 +20,16 @@ export class TaskComponent implements OnInit {
     private popupService: PopupStatusService,
   ) {}
 
-  editAt: number = -1;
-  showAll: boolean = false;
-  tasks: Task[] = [];
-  randomDisplay = 0;
-  getConfirmation: boolean = false;
-  popupID = PopupEnum.DELETETASK;
-
-  toggleShowAll() {
-    this.showAll = !this.showAll;
-  }
+  tasks: Task[] = []; // Array to hold the list of tasks
+  showAll: boolean = false; // all tasks should be displayed ? (ShowLessMoreComponent)
+  editAt: number = -1; // Index of the task currently being edited, -1 means no task is being edited
+  randomDisplay = 0; // Index of the currently displayed random task
+  popupID = PopupEnum.DELETETASK; // Store a new popup or get it (PopupComponent)
+  deleteTaskID: number = -1; // ID of the task to be deleted
 
   ngOnInit(): void {
-    this.taskService.fetchTasks().subscribe((tasks) => {
+    this.taskService.fetchTasks().subscribe();
+    this.taskService.$tasks.subscribe((tasks) => {
       this.tasks = tasks;
       // display random task while showAll is false
       this.randomTaskDisplay(tasks.length);
@@ -42,7 +39,7 @@ export class TaskComponent implements OnInit {
   randomTaskDisplay(max: number): void {
     setInterval(() => {
       if (this.editAt !== -1) {
-        // set randomDisplay to current index of task under editing
+        // set randomDisplay to current index of the task under editing
         this.randomDisplay = this.tasks.findIndex(
           (task) => task.id === this.editAt,
         );
@@ -60,7 +57,7 @@ export class TaskComponent implements OnInit {
 
   editDone(task: Task) {
     const currState = task.done;
-    this.taskService.editTask(task.id, { done: !currState });
+    this.taskService.update(task.id, { done: !currState });
   }
 
   enterPress(e: KeyboardEvent, task: Task) {
@@ -72,11 +69,17 @@ export class TaskComponent implements OnInit {
       ele.readOnly = true;
       this.editAt = -1;
       task.title = newTaskTitle;
-      this.taskService.editTask(task.id, { title: newTaskTitle });
+      this.taskService.update(task.id, { title: newTaskTitle });
     }
   }
 
-  deleteTask(task: Task) {
+  getDeleteConfirmation(id: number) {
     this.popupService.show(this.popupID);
+    this.deleteTaskID = id;
+  }
+
+  deleteTask() {
+    this.taskService.delete(this.deleteTaskID);
+    this.popupService.remove(this.popupID);
   }
 }

@@ -32,14 +32,14 @@ export class PopupComponent implements OnInit {
   @HostListener('window:keydown', ['$event'])
   closeESC(event: KeyboardEvent) {
     if (event.key === 'Escape' && this.isOpen) {
-      this.popupStatus.hide(this.popupID);
+      this.popupStatus.remove(this.popupID);
     }
   }
 
   @HostListener('document:click', ['$event'])
   onDocClick(event: MouseEvent) {
     if (this.isOpen && !this.isInsidePopUp(event)) {
-      this.popupStatus.hide(this.popupID);
+      this.popupStatus.remove(this.popupID);
     }
   }
 

@@ -18,13 +18,22 @@ export class TaskService {
     return caller.getDataFor<Task>('task', this.taskSubject);
   }
 
-  async editTask(id: number, payload: Partial<Task>) {
+  async update(id: number, payload: Partial<Task>): Promise<void> {
     const caller = new Caller();
     const res = await caller.patch<Task>(`task/${id}`, payload);
     if (Object.keys(res).length) {
       const curr = this.taskSubject.getValue();
       const replaceIndex = curr.findIndex((task) => res.id === task.id);
       curr[replaceIndex] = res;
+    }
+  }
+
+  async delete(id: number): Promise<void> {
+    const caller = new Caller();
+    const res = await caller.delete(`task/${id}`);
+    if (res.affected) {
+      const curr = this.taskSubject.getValue().filter((task) => task.id !== id);
+      this.taskSubject.next(curr);
     }
   }
 }

@@ -5,11 +5,14 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root',
 })
 
-// Each popup gets a name for its display, ( PopupEnum )
+// Class to control popup all over the app
 export class PopupStatusService {
-  private popupStatusMap: Map<number, BehaviorSubject<boolean>> = new Map();
-
   constructor() {}
+  /*
+   * Each popup is registered on a mapper,
+   * you could display popus from the mapper by calling show method or even add new ones
+   */
+  private popupStatusMap: Map<number, BehaviorSubject<boolean>> = new Map();
 
   // subscribe to observable
   getPopupStatus(popupId: number): Observable<boolean> {
@@ -19,7 +22,8 @@ export class PopupStatusService {
     return this.popupStatusMap.get(popupId)!.asObservable();
   }
 
-  // show the popup via the service given a popupId
+  // add the popup id that being require to show through out the PopupEnum
+  // @Param popupId: NOTE: use PopupEnum to pass which popup to show
   show(popupId: number) {
     document.body.style.overflow = 'hidden';
     if (!this.popupStatusMap.has(popupId)) {
@@ -29,9 +33,9 @@ export class PopupStatusService {
     }
   }
 
-  // popup component hides it self just showing it and it closes it self on spesific actions
-  // you could close it manually by calling this method
-  hide(popupId: number) {
+  // popups have the ability to hide themselves under some actions
+  // @Param popupId: NOTE: use PopupEnum to pass which popup to remove for manually remove
+  remove(popupId: number) {
     document.body.style.overflow = 'auto';
     if (this.popupStatusMap.has(popupId)) {
       this.popupStatusMap.get(popupId)!.next(false);
