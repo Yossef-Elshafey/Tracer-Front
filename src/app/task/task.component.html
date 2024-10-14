@@ -1,13 +1,45 @@
-<!-- Show Less/More button component -->
-<div *ngIf="tasks.length">
+<div
+  class="flex items-center justify-between w-full mt-20"
+  *ngIf="serverState === 'up'"
+>
+  <!-- Show Less/More button component -->
   <app-show-less-more
     [showAll]="showAll"
     (click)="showAll = !showAll"
   ></app-show-less-more>
+
+  <!-- add Task button -->
+  <svg
+    class="w-5 fill-white cursor-pointer"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 448 512"
+    (click)="preAddTask()"
+  >
+    <path
+      d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"
+    />
+  </svg>
 </div>
 
-<app-popup [popupID]="popupID">
+<app-popup [popupID]="popupEnum.DELETE_TASK">
   <button class="text-rose-700" (click)="deleteTask()">Confirm</button>
+</app-popup>
+
+<app-popup [popupID]="popupEnum.ADD_TASK">
+  <div class="flex flex-col gap-y-4">
+    <label class="flex items-center" for="title">
+      Daily Task:
+      <input
+        #taskTitle
+        class="border-b bg-transparent outline-none ml-4 flex-1"
+        type="text"
+        name="title"
+        value=""
+      />
+    </label>
+
+    <button (click)="addTask(taskTitle)" class="text-secondary">Confirm</button>
+  </div>
 </app-popup>
 
 @for (
@@ -69,7 +101,7 @@
         class="w-7 fill-rose-700 cursor-pointer"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 448 512"
-        (click)="getDeleteConfirmation(task.id)"
+        (click)="preDeleteTask(task.id)"
       >
         <path
           d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"

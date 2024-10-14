@@ -7,30 +7,36 @@ import {
   Observable,
   of,
   retry,
+  switchAll,
   switchMap,
   throwError,
   timer,
 } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 interface DeleteServerResponse {
   row: [];
   affected: number;
 }
 
+@Injectable({
+  providedIn: 'root',
+})
+
 /*
  * The Caller class provides methods to interact with a server, performing
  * HTTP PATCH requests, GET requests with retries, and health checks.
  * NOTE: Necessary logical errors,logs are handled while others take direct effect on the app
+ * NOTE: Most method uses @Template T which indicates the server response schema
  */
 export class Caller {
   // The delay time in milliseconds before retrying a failed request
   readonly DELAY_TIME: number = 3000;
 
-  /**
-   * @param path - The relative path for the URL
-   * @param payload - Partial Object of T as JSON object to be patched
-   * @returns A promise resolving with the server's response as a JSON object of type T.
-   */
+  post<T>(path: string, payload: Partial<T> | T): Promise<T> {
+    const call = this.baseCall(path, { method: 'POST' }, payload);
+    return firstValueFrom(call);
+  }
 
   delete(path: string): Promise<DeleteServerResponse> {
     const call = this.baseCall<DeleteServerResponse>(path, {
@@ -44,15 +50,14 @@ export class Caller {
     return firstValueFrom(call);
   }
 
-  /**
+  /*
    * Fetches data from the server and updates the provided BehaviorSubject with the result.
-   *
    * @param path - The relative path for the URL
    * @param subj - BehaviorSubject to store the server response as an observable.
    * @returns - An observable containing the server response data.
    */
 
-  getDataFor<T>(path: string, subj: BehaviorSubject<T[]>): Observable<T[]> {
+  get<T>(path: string, subj: BehaviorSubject<T[]>): Observable<T[]> {
     return this.baseCall<T[]>(path).pipe(
       switchMap((res: T[]) => {
         subj.next(res);
@@ -67,15 +72,16 @@ export class Caller {
     );
   }
 
-  /**
+  /*
    * Makes an HTTP request to the given path using the specified method and payload.
    * @param path - Relative URL to make the request.
-   * @param options - Request method POST,PATCH etc... GET default
+   * @param options - Request method POST,PATCH etc... * GET default *
    * @param payload - Optional data to send with the request
    * @returns Observable of the server response.
-   *
    */
-  baseCall<T>(
+
+  // TODO: options might include path and payload
+  private baseCall<T>(
     path: string,
     options: { method: string } = { method: 'GET' },
     payload?: T | Partial<T>,
@@ -99,7 +105,7 @@ export class Caller {
     );
   }
 
-  /**
+  /*
    * Performs a health check on the server by sending a GET request to the base URL.
    * If the server responds successfully, it returns the string 'up'.
    * Otherwise, it retries the request after a delay.
@@ -107,10 +113,14 @@ export class Caller {
    * @returns A promise that resolves to the string 'up' if the server is reachable.
    */
 
+  private stateSubject = new BehaviorSubject<string>('');
+  $state = this.stateSubject.asObservable();
+
   async healthCheck(): Promise<string> {
     const call = fromFetch(SERVER_URL).pipe(
       switchMap((res) => {
         if (res.ok) {
+          this.stateSubject.next('up');
           return of('up');
         }
         return of('');
@@ -122,6 +132,7 @@ export class Caller {
       }),
     );
 
+    // Return the result and cache the value for future calls
     return firstValueFrom(call);
   }
 }

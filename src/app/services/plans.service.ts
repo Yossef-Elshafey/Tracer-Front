@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Plan } from '../types/plan';
+import { Plan } from '../types/interface';
 import { Caller } from '../common/caller';
 
 @Injectable({
@@ -11,10 +11,9 @@ export class PlansService {
     [] as Plan[],
   );
   $plans = this.planSubject.asObservable();
-  constructor() {}
+  constructor(private caller: Caller) {}
 
   fetchPlans(): Observable<Plan[]> {
-    const caller = new Caller();
-    return caller.getDataFor<Plan>('plan', this.planSubject);
+    return this.caller.get<Plan>('plan', this.planSubject);
   }
 }

@@ -14,7 +14,7 @@ export class PopupStatusService {
    */
   private popupStatusMap: Map<number, BehaviorSubject<boolean>> = new Map();
 
-  // subscribe to observable
+  // send the status to the popup component so it could capture other component calls
   getPopupStatus(popupId: number): Observable<boolean> {
     if (!this.popupStatusMap.has(popupId)) {
       this.popupStatusMap.set(popupId, new BehaviorSubject<boolean>(false));
@@ -22,7 +22,7 @@ export class PopupStatusService {
     return this.popupStatusMap.get(popupId)!.asObservable();
   }
 
-  // add the popup id that being require to show through out the PopupEnum
+  // add the popup id that being require to show via the PopupEnum
   // @Param popupId: NOTE: use PopupEnum to pass which popup to show
   show(popupId: number) {
     document.body.style.overflow = 'hidden';
@@ -33,8 +33,8 @@ export class PopupStatusService {
     }
   }
 
-  // popups have the ability to hide themselves under some actions
-  // @Param popupId: NOTE: use PopupEnum to pass which popup to remove for manually remove
+  // popups have the ability to remove themselves under some actions
+  // @Param popupId: NOTE: use PopupEnum to pass which popup to remove for manual remove
   remove(popupId: number) {
     document.body.style.overflow = 'auto';
     if (this.popupStatusMap.has(popupId)) {

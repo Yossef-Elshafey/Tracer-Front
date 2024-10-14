@@ -1,22 +1,21 @@
-import { Component } from "@angular/core";
-import { Caller } from "../common/caller";
+import { Component } from '@angular/core';
+import { Caller } from '../common/caller';
 
 @Component({
-  selector: "app-navbar",
+  selector: 'app-navbar',
   standalone: true,
   imports: [],
-  templateUrl: "./navbar.component.html",
-  styleUrl: "./navbar.component.scss",
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent {
-  state = "down";
+  state = 'down';
 
-  constructor() {
+  constructor(private caller: Caller) {
     this.isServerUp();
   }
 
   async isServerUp() {
-    const state = new Caller();
-    this.state = await state.healthCheck();
+    this.state = await this.caller.healthCheck();
   }
 }
