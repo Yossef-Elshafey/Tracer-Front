@@ -19,8 +19,7 @@ import { Caller } from '../common/caller';
 export class CalendarComponent implements OnInit {
   constructor(private caller: Caller) {}
 
-  @Input() markStart: Date[] = []; // Array of dates to be marked as start dates on the calendar.
-  @Input() markEnd: Date[] = []; // markEnd - Array of dates to be marked as end dates on the calendar
+  @Input() markStart: Date[] = []; // to be marked as start dates on the calendar.
 
   calendarBuilder = {} as CalendarInfo; // Object that holds information about the calendar's structure
   month = new Date().getMonth();
@@ -32,12 +31,7 @@ export class CalendarComponent implements OnInit {
   currMonthDays = [] as number[]; // all days of the current month.
   nextMonthDays = [] as number[]; // the first few days from the next month.
 
-  serverState = '';
-
   ngOnInit(): void {
-    this.caller.$state.subscribe((state) => {
-      this.serverState = state;
-    });
     this.calendarHead = `${this.getMonthName(this.month)} ${this.year}`;
     this.loadCalendar();
   }
@@ -46,15 +40,35 @@ export class CalendarComponent implements OnInit {
     return index;
   }
 
-  isStartDateFor(day: number): boolean {
+  // while calendar is displayed, it has values from prev,curr,next, month's days
+  // to.next mark the displayed data for the next month, same for to.prev but the previous
+  //
+  // if { to } not provided calc for the curr month
+  markAsStartDate(
+    day: number,
+    to: { next: boolean; prev: boolean } = { next: false, prev: false },
+  ): boolean {
     return this.markStart.some((date) => {
+      let monthCompare;
+
+      if (to.prev) {
+        monthCompare = this.month - 1;
+      } else if (to.next) {
+        monthCompare = this.month + 1;
+      } else {
+        monthCompare = this.month;
+      }
+
       const dateInstance = new Date(date);
       const isSameDay = day === dateInstance.getDate();
-      const isSameMonth = this.month === dateInstance.getMonth();
+      const isSameMonth = monthCompare === dateInstance.getMonth();
       const isSameYear = this.year === dateInstance.getFullYear();
       return isSameDay && isSameMonth && isSameYear;
     });
   }
+
+  // while display prev days would be displayed
+  // mark them while the current month data is displayed
 
   isToday(day: number) {
     const date = new Date();
@@ -92,7 +106,7 @@ export class CalendarComponent implements OnInit {
 
   getNextMonthDays() {
     const beforeNext = [...this.prevMonthDays, ...this.currMonthDays].length;
-    const max = 6 * 7; // 6 rows, 7 columns
+    const max = 6 * 7; // always 6 rows
     const range = max - beforeNext;
 
     for (let i = 1; i <= range; i++) {

@@ -1,5 +1,3 @@
-<!-- @for (plan of plans; track plan.id) { -->
-<!--   <div>{{ plan.plan }}</div> -->
-<!-- } -->
-
-<app-calendar [markStart]="plansStartAt"></app-calendar>
+<div *ngIf="serverState === 'up'">
+  <app-calendar [markStart]="plansStartAt"></app-calendar>
+</div>

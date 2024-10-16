@@ -3,6 +3,7 @@ import { PlansService } from '../services/plans.service';
 import { Plan } from '../types/interface';
 import { CommonModule } from '@angular/common';
 import { CalendarComponent } from '../calendar/calendar.component';
+import { Caller } from '../common/caller';
 
 @Component({
   selector: 'app-plans',
@@ -12,16 +13,24 @@ import { CalendarComponent } from '../calendar/calendar.component';
   styleUrl: './plans.component.scss',
 })
 export class PlansComponent implements OnInit {
-  constructor(private planService: PlansService) {}
-  plans = [] as Plan[];
+  constructor(
+    private planService: PlansService,
+    private caller: Caller,
+  ) {}
 
+  plans = [] as Plan[];
   plansStartAt: Date[] = [];
+  serverState = '';
 
   ngOnInit(): void {
     this.planService.fetchPlans().subscribe();
     this.planService.$plans.subscribe((plans) => {
       this.plans = plans;
       this.startAt();
+    });
+
+    this.caller.$state.subscribe((state) => {
+      this.serverState = state;
     });
   }
 
