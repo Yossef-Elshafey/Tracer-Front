@@ -48,6 +48,7 @@
             next: false,
           }),
         }"
+        (click)="emitValue($event)"
         class="rounded-full w-full py-2 text-center cursor-pointer"
       >
         {{ day }}
@@ -64,6 +65,7 @@
           'bg-[#2d2d2e] text-white': !isToday(day),
           'bg-green-600 text-white': markAsStartDate(day),
         }"
+        (click)="emitValue($event)"
       >
         {{ day }}
       </button>
@@ -81,13 +83,10 @@
           }),
         }"
         class="rounded-full w-full py-2 text-center cursor-pointer"
+        (click)="emitValue($event)"
       >
         {{ day }}
       </button>
     </div>
   </div>
 </div>
-
-@for (date of markStart; track date) {
-  <div>{{ date }}</div>
-}

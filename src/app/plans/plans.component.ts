@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import { PlansService } from '../services/plans.service';
 import { Plan } from '../types/interface';
 import { CommonModule } from '@angular/common';
@@ -21,6 +21,7 @@ export class PlansComponent implements OnInit {
   plans = [] as Plan[];
   plansStartAt: Date[] = [];
   serverState = '';
+  dayClicked = '';
 
   ngOnInit(): void {
     this.planService.fetchPlans().subscribe();
@@ -36,5 +37,9 @@ export class PlansComponent implements OnInit {
 
   startAt() {
     this.plansStartAt = this.plans.map((obj) => obj.added);
+  }
+
+  captureEmitValue(e: string) {
+    console.log(e);
   }
 }

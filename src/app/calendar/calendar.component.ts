@@ -1,12 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CalendarInfo } from '../types/interface';
-import { Caller } from '../common/caller';
 
 @Component({
   selector: 'app-calendar',
@@ -17,9 +18,8 @@ import { Caller } from '../common/caller';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarComponent implements OnInit {
-  constructor(private caller: Caller) {}
-
   @Input() markStart: Date[] = []; // to be marked as start dates on the calendar.
+  @Output() dayClicked = new EventEmitter<string>();
 
   calendarBuilder = {} as CalendarInfo; // Object that holds information about the calendar's structure
   month = new Date().getMonth();
@@ -34,6 +34,13 @@ export class CalendarComponent implements OnInit {
   ngOnInit(): void {
     this.calendarHead = `${this.getMonthName(this.month)} ${this.year}`;
     this.loadCalendar();
+  }
+
+  emitValue(e: MouseEvent) {
+    const btn = e.currentTarget as HTMLButtonElement;
+    this.dayClicked.emit(
+      `${this.year}-${this.month + 1}-${btn.innerHTML.trim()}`,
+    );
   }
 
   trackByDay(index: number): number {
