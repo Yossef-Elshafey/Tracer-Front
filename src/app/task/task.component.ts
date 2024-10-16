@@ -13,6 +13,7 @@ import { Caller } from '../common/caller';
   standalone: true,
   imports: [CommonModule, ShowLessMoreComponent, PopupComponent],
   templateUrl: './task.component.html',
+
   styleUrl: './task.component.scss',
 })
 export class TaskComponent implements OnInit {
@@ -35,10 +36,10 @@ export class TaskComponent implements OnInit {
     this.taskService.$tasks.subscribe((tasks) => {
       this.tasks = tasks;
     });
-    this.shuffleTasks();
     this.caller.$state.subscribe((state) => {
       this.serverState = state;
     });
+    this.shuffleTasks();
   }
 
   // display random task while showAll is false

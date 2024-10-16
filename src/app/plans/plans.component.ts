@@ -15,10 +15,17 @@ export class PlansComponent implements OnInit {
   constructor(private planService: PlansService) {}
   plans = [] as Plan[];
 
+  plansStartAt: Date[] = [];
+
   ngOnInit(): void {
     this.planService.fetchPlans().subscribe();
     this.planService.$plans.subscribe((plans) => {
       this.plans = plans;
+      this.startAt();
     });
+  }
+
+  startAt() {
+    this.plansStartAt = this.plans.map((obj) => obj.added);
   }
 }

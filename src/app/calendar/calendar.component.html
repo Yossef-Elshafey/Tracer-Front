@@ -1,4 +1,7 @@
-<div class="bg-[#191919] text-white rounded-lg p-2">
+<div
+  class="bg-[#191919] text-white rounded-lg p-2"
+  *ngIf="serverState === 'up'"
+>
   <div class="flex items-center justify-between">
     <h2 class="text-lg font-bold mb-4">{{ calendarHead }}</h2>
     <div class="flex items-center gap-x-4">
@@ -38,15 +41,34 @@
   <!-- Days of the month -->
   <div class="flex flex-wrap">
     <div
-      *ngFor="let day of calendar; trackBy: trackByDay"
+      *ngFor="let day of prevMonthDays; let i = index; trackBy: trackByDay"
+      class="w-[calc(100%/7)] flex justify-center items-center p-2"
+    >
+      <button class="rounded-full w-full py-2 text-center cursor-pointer">
+        {{ day }}
+      </button>
+    </div>
+    <div
+      *ngFor="let day of currMonthDays; let i = index; trackBy: trackByDay"
       class="w-[calc(100%/7)] flex justify-center items-center p-2"
     >
       <button
-        class="bg-[#2d2d2e] text-white rounded-full w-full py-2 text-center cursor-pointer"
+        class="rounded-full w-full py-2 text-center cursor-pointer"
         [ngClass]="{
           'bg-white text-black': isToday(day),
+          'bg-[#2d2d2e] text-white': !isToday(day),
+          'bg-secondary text-white': isStartDateFor(day),
         }"
       >
+        {{ day }}
+      </button>
+    </div>
+
+    <div
+      *ngFor="let day of nextMonthDays; trackBy: trackByDay"
+      class="w-[calc(100%/7)] flex justify-center items-center p-2"
+    >
+      <button class="rounded-full w-full py-2 text-center cursor-pointer">
         {{ day }}
       </button>
     </div>
