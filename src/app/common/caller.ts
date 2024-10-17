@@ -7,7 +7,6 @@ import {
   Observable,
   of,
   retry,
-  switchAll,
   switchMap,
   throwError,
   timer,
@@ -26,7 +25,7 @@ interface DeleteServerResponse {
 /*
  * The Caller class provides methods to interact with a server, performing
  * HTTP PATCH requests, GET requests with retries, and health checks.
- * NOTE: Necessary logical errors,logs are handled while others take direct effect on the app
+ * NOTE: Some errors are printed out in the required way, while other has effect on the app
  * NOTE: Most method uses @Template T which indicates the server response schema
  */
 export class Caller {
@@ -80,7 +79,6 @@ export class Caller {
    * @returns Observable of the server response.
    */
 
-  // TODO: options might include path and payload
   private baseCall<T>(
     path: string,
     options: { method: string } = { method: 'GET' },

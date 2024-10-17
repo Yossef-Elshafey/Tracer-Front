@@ -2,10 +2,21 @@
   <div class="md:w-1/2 lg:w-1/3">
     <app-calendar
       [markStart]="plansStartAt"
+      [markEnd]="plansEndAt"
       (dayClicked)="captureEmitValue($event)"
     ></app-calendar>
   </div>
   <div class="md:w-1/2 lg:w-2/3 rounded-md bg-[#191919] p-2">
-    <p>Hello</p>
+    <p>
+      {{
+        isDateStartOfPlan()
+          ? 'this is a strat date '
+          : 'this is not a start date'
+      }}
+    </p>
+
+    <p>
+      {{ isDateEndOfPlan() ? 'this is a end date ' : 'this is not a end date' }}
+    </p>
   </div>
 </div>

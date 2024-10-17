@@ -18,7 +18,8 @@ import { CalendarInfo } from '../types/interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarComponent implements OnInit {
-  @Input() markStart: Date[] = []; // to be marked as start dates on the calendar.
+  @Input() markStart: string[] = []; // to be marked as start dates on the calendar.
+  @Input() markEnd: string[] = []; // to be marked as end dates on the calendar.
   @Output() dayClicked = new EventEmitter<string>();
 
   calendarBuilder = {} as CalendarInfo; // Object that holds information about the calendar's structure
@@ -32,7 +33,6 @@ export class CalendarComponent implements OnInit {
   nextMonthDays = [] as number[]; // the first few days from the next month.
 
   ngOnInit(): void {
-    this.calendarHead = `${this.getMonthName(this.month)} ${this.year}`;
     this.loadCalendar();
   }
 
@@ -56,6 +56,29 @@ export class CalendarComponent implements OnInit {
     to: { next: boolean; prev: boolean } = { next: false, prev: false },
   ): boolean {
     return this.markStart.some((date) => {
+      let monthCompare;
+
+      if (to.prev) {
+        monthCompare = this.month - 1;
+      } else if (to.next) {
+        monthCompare = this.month + 1;
+      } else {
+        monthCompare = this.month;
+      }
+
+      const dateInstance = new Date(date);
+      const isSameDay = day === dateInstance.getDate();
+      const isSameMonth = monthCompare === dateInstance.getMonth();
+      const isSameYear = this.year === dateInstance.getFullYear();
+      return isSameDay && isSameMonth && isSameYear;
+    });
+  }
+
+  markAsEndDate(
+    day: number,
+    to: { next: boolean; prev: boolean } = { next: false, prev: false },
+  ): boolean {
+    return this.markEnd.some((date) => {
       let monthCompare;
 
       if (to.prev) {

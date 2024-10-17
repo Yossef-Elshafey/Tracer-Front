@@ -47,6 +47,11 @@
             prev: true,
             next: false,
           }),
+
+          'bg-red-600 text-white': markAsEndDate(day, {
+            prev: true,
+            next: false,
+          }),
         }"
         (click)="emitValue($event)"
         class="rounded-full w-full py-2 text-center cursor-pointer"
@@ -64,6 +69,7 @@
           'bg-white text-black': isToday(day),
           'bg-[#2d2d2e] text-white': !isToday(day),
           'bg-green-600 text-white': markAsStartDate(day),
+          'bg-red-600 text-white': markAsEndDate(day),
         }"
         (click)="emitValue($event)"
       >
@@ -78,6 +84,11 @@
       <button
         [ngClass]="{
           'bg-green-600/30 text-white': markAsStartDate(day, {
+            prev: false,
+            next: true,
+          }),
+
+          'bg-red-600 text-white': markAsEndDate(day, {
             prev: false,
             next: true,
           }),

@@ -2,8 +2,8 @@ export interface Plan {
   id: number;
   plan: string;
   steps: number;
-  added: Date;
-  finish_by: Date;
+  added: string;
+  finish_by: string;
   state: boolean;
   progress: number;
 }
