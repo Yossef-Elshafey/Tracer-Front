@@ -21,3 +21,8 @@ export interface CalendarInfo {
   end: number;
   endPrevDate: number;
 }
+
+export interface Note {
+  id: number;
+  note: string;
+}

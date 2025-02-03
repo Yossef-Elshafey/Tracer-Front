@@ -1,0 +1,57 @@
+<div
+  *ngIf="serverState === 'up'"
+  class="flex items-center flex-wrap gap-x-4 gap-y-4 mt-20 relative group"
+>
+  <svg
+    class="w-8 fill-white cursor-pointer absolute right-0 opacity-0"
+    [ngClass]="{
+      'group-hover:opacity-100 transition-opacity': notes.length,
+      'opacity-100': !notes.length,
+    }"
+    xmlns="http://www.w3.org/2000/svg"
+    (click)="showAddNote()"
+    viewBox="0 0 448 512"
+  >
+    <path
+      d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"
+    />
+  </svg>
+  @for (note of notes; track note.id) {
+    <div
+      (click)="displaySingleNote(note.id)"
+      class="text-md w-[calc((100%/3)-2rem)] overflow-y-scroll min-h-[100px] max-h-[200px] bg-secondary rounded-md p-4 cursor-pointer"
+    >
+      <p>{{ note.note }}</p>
+    </div>
+  }
+</div>
+
+<app-popup [popupID]="popupEnum.DISPLAY_NOTE">
+  <svg
+    class="w-7 fill-rose-700 cursor-pointer"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 448 512"
+    (click)="deleteNote(singleNote.id)"
+  >
+    <path
+      d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"
+    />
+  </svg>
+  <p>{{ singleNote.note }}</p>
+</app-popup>
+
+<app-popup [popupID]="popupEnum.ADD_NOTE">
+  <div class="flex flex-col gap-y-4">
+    <label class="flex items-center" for="note">
+      Note:
+      <textarea
+        #note
+        class="border-b bg-transparent outline-none ml-4 flex-1 min-h-[300px]"
+        type="text"
+        name="note"
+      ></textarea>
+    </label>
+
+    <button (click)="addNote(note)" class="text-secondary">Confirm</button>
+  </div>
+</app-popup>

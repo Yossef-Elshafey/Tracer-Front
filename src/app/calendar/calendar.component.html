@@ -43,17 +43,12 @@
     >
       <button
         [ngClass]="{
-          'bg-green-600/30 text-white': markAsStartDate(day, {
-            prev: true,
-            next: false,
-          }),
-
-          'bg-red-600 text-white': markAsEndDate(day, {
+          'bg-red-600/30 text-white': markAsEndDate(day, {
             prev: true,
             next: false,
           }),
         }"
-        (click)="emitValue($event)"
+        (click)="emitValue($event, 0)"
         class="rounded-full w-full py-2 text-center cursor-pointer"
       >
         {{ day }}
@@ -67,11 +62,10 @@
         class="rounded-full w-full py-2 text-center cursor-pointer"
         [ngClass]="{
           'bg-white text-black': isToday(day),
-          'bg-[#2d2d2e] text-white': !isToday(day),
-          'bg-green-600 text-white': markAsStartDate(day),
-          'bg-red-600 text-white': markAsEndDate(day),
+          'bg-red-600 text-white': !isToday(day) && markAsEndDate(day),
+          'bg-[#2d2d2e] text-white': !isToday(day) && !markAsEndDate(day),
         }"
-        (click)="emitValue($event)"
+        (click)="emitValue($event, 1)"
       >
         {{ day }}
       </button>
@@ -83,18 +77,13 @@
     >
       <button
         [ngClass]="{
-          'bg-green-600/30 text-white': markAsStartDate(day, {
-            prev: false,
-            next: true,
-          }),
-
-          'bg-red-600 text-white': markAsEndDate(day, {
+          'bg-red-600/30 text-white': markAsEndDate(day, {
             prev: false,
             next: true,
           }),
         }"
         class="rounded-full w-full py-2 text-center cursor-pointer"
-        (click)="emitValue($event)"
+        (click)="emitValue($event, 2)"
       >
         {{ day }}
       </button>

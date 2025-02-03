@@ -9,6 +9,11 @@ import {
 import { CommonModule } from '@angular/common';
 import { CalendarInfo } from '../types/interface';
 
+type PrevDaysOrNext = {
+  next: boolean;
+  prev: boolean;
+};
+
 @Component({
   selector: 'app-calendar',
   standalone: true,
@@ -18,7 +23,6 @@ import { CalendarInfo } from '../types/interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarComponent implements OnInit {
-  @Input() markStart: string[] = []; // to be marked as start dates on the calendar.
   @Input() markEnd: string[] = []; // to be marked as end dates on the calendar.
   @Output() dayClicked = new EventEmitter<string>();
 
@@ -36,10 +40,11 @@ export class CalendarComponent implements OnInit {
     this.loadCalendar();
   }
 
-  emitValue(e: MouseEvent) {
+  emitValue(e: MouseEvent, month: number) {
     const btn = e.currentTarget as HTMLButtonElement;
+
     this.dayClicked.emit(
-      `${this.year}-${this.month + 1}-${btn.innerHTML.trim()}`,
+      `${this.year}-${this.month + month}-${btn.innerHTML.trim()}`,
     );
   }
 
@@ -49,13 +54,15 @@ export class CalendarComponent implements OnInit {
 
   // while calendar is displayed, it has values from prev,curr,next, month's days
   // to.next mark the displayed data for the next month, same for to.prev but the previous
-  //
   // if { to } not provided calc for the curr month
-  markAsStartDate(
+  marker(
     day: number,
-    to: { next: boolean; prev: boolean } = { next: false, prev: false },
-  ): boolean {
-    return this.markStart.some((date) => {
+    mark: 'markEnd', // Input values
+    to: PrevDaysOrNext = { next: false, prev: false },
+  ) {
+    const dates = this[mark];
+
+    return dates.some((date: string) => {
       let monthCompare;
 
       if (to.prev) {
@@ -78,34 +85,17 @@ export class CalendarComponent implements OnInit {
     day: number,
     to: { next: boolean; prev: boolean } = { next: false, prev: false },
   ): boolean {
-    return this.markEnd.some((date) => {
-      let monthCompare;
-
-      if (to.prev) {
-        monthCompare = this.month - 1;
-      } else if (to.next) {
-        monthCompare = this.month + 1;
-      } else {
-        monthCompare = this.month;
-      }
-
-      const dateInstance = new Date(date);
-      const isSameDay = day === dateInstance.getDate();
-      const isSameMonth = monthCompare === dateInstance.getMonth();
-      const isSameYear = this.year === dateInstance.getFullYear();
-      return isSameDay && isSameMonth && isSameYear;
-    });
+    return this.marker(day, 'markEnd', to);
   }
-
-  // while display prev days would be displayed
-  // mark them while the current month data is displayed
 
   isToday(day: number) {
     const date = new Date();
     const today = date.getDate();
     const currMonth = date.getMonth();
     const currYear = date.getFullYear();
-    return today === day && this.month === currMonth && this.year === currYear;
+    const compare =
+      today === day && this.month === currMonth && this.year === currYear;
+    return compare;
   }
 
   prepareCalendar() {
